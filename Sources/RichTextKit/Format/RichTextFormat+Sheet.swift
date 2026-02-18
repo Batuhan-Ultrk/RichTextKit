@@ -51,6 +51,7 @@ public extension RichTextFormat {
                     RichTextFont.ListPicker(
                         selection: $context.fontName
                     )
+                    .padding(.top, 30)
                     Divider()
                     RichTextFormat.Toolbar(
                         context: context
@@ -58,13 +59,6 @@ public extension RichTextFormat {
                     .richTextFormatToolbarConfig(config)
                 }
                 .padding(.top, -35)
-                .toolbar {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(RTKL10n.done.text) {
-                            dismiss()
-                        }
-                    }
-                }
                 .navigationTitle("")
                 #if iOS
                 .navigationBarTitleDisplayMode(.inline)
