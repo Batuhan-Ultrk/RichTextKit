@@ -62,7 +62,7 @@ open class RichTextView: NSTextView, RichTextViewComponent {
 
     open override func layout() {
         super.layout()
-        updatePlaceholderLayout()
+        updatePlaceholder()
     }
 
     /// Paste the current pasteboard content into the view.

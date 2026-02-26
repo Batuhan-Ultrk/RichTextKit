@@ -105,6 +105,7 @@ open class RichTextView: UITextView, RichTextViewComponent {
     private lazy var placeholderLabel: UILabel = {
         let label = UILabel()
         label.isUserInteractionEnabled = false
+        label.numberOfLines = 0
         label.textColor = .placeholderText
         return label
     }()
@@ -133,7 +134,7 @@ open class RichTextView: UITextView, RichTextViewComponent {
 
     open override func layoutSubviews() {
         super.layoutSubviews()
-        updatePlaceholderLayout()
+        updatePlaceholder()
     }
 
     open override var attributedText: NSAttributedString! {
