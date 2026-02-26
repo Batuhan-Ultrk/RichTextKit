@@ -417,7 +417,7 @@ private extension RichTextView {
             )
         }
         placeholderLabel.text = configuration.placeholder
-        placeholderLabel.font = font
+        placeholderLabel.font = theme.font
         placeholderLabel.isHidden = !attributedString.string.isEmpty
         updatePlaceholderLayout()
     }

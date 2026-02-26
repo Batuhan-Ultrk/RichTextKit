@@ -257,7 +257,7 @@ private extension RichTextView {
             addSubview(placeholderTextField)
         }
         placeholderTextField.stringValue = configuration.placeholder ?? ""
-        placeholderTextField.font = font
+        placeholderTextField.font = theme.font
         placeholderTextField.isHidden = !attributedString.string.isEmpty
         updatePlaceholderLayout()
     }
