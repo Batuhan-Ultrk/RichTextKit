@@ -25,12 +25,14 @@ public extension RichTextView {
             isScrollingEnabled: Bool = true,
             allowsEditingTextAttributes: Bool = true,
             autocapitalizationType: UITextAutocapitalizationType = .sentences,
-            spellCheckingType: UITextSpellCheckingType = .no
+            spellCheckingType: UITextSpellCheckingType = .no,
+            placeholder: String? = nil
         ) {
             self.isScrollingEnabled = isScrollingEnabled
             self.allowsEditingTextAttributes = allowsEditingTextAttributes
             self.autocapitalizationType = autocapitalizationType
             self.spellCheckingType = spellCheckingType
+            self.placeholder = placeholder
         }
 
         /// Whether or not the editor should scroll.
@@ -44,6 +46,9 @@ public extension RichTextView {
 
         /// If TextView spell-checks the text.
         public var spellCheckingType: UITextSpellCheckingType
+
+        /// The placeholder text to display when the editor is empty.
+        public var placeholder: String?
     }
 }
 #endif

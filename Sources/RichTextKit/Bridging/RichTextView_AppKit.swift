@@ -23,7 +23,13 @@ open class RichTextView: NSTextView, RichTextViewComponent {
     // MARK: - Properties
 
     /// The configuration to use by the rich text view.
-    public var configuration: Configuration = .standard
+    public var configuration: Configuration = .standard {
+        didSet {
+            isContinuousSpellCheckingEnabled = configuration.isContinuousSpellCheckingEnabled
+            placeholderTextField.stringValue = configuration.placeholder ?? ""
+            updatePlaceholder()
+        }
+    }
 
     /// The theme for coloring and setting style to text view.
     public var theme: Theme = .standard {
@@ -41,7 +47,23 @@ open class RichTextView: NSTextView, RichTextViewComponent {
     /// The image configuration to use by the rich text view.
     var imageConfigurationWasSet = false
 
+    /// The placeholder text field to use by the rich text view.
+    private lazy var placeholderTextField: NSTextField = {
+        let field = NSTextField(labelWithString: "")
+        field.isBezeled = false
+        field.isEditable = false
+        field.isSelectable = false
+        field.drawsBackground = false
+        field.textColor = .placeholderTextColor
+        return field
+    }()
+
     // MARK: - Overrides
+
+    open override func layout() {
+        super.layout()
+        updatePlaceholderLayout()
+    }
 
     /// Paste the current pasteboard content into the view.
     open override func paste(_ sender: Any?) {
@@ -221,6 +243,31 @@ public extension RichTextView {
         pasteboardTypes.append(.png)
         return pasteboardTypes
     }
+
+    override func didChangeText() {
+        super.didChangeText()
+        updatePlaceholder()
+    }
 }
 
+private extension RichTextView {
+
+    func updatePlaceholder() {
+        if placeholderTextField.superview == nil {
+            addSubview(placeholderTextField)
+        }
+        placeholderTextField.stringValue = configuration.placeholder ?? ""
+        placeholderTextField.font = font
+        placeholderTextField.isHidden = !attributedString.string.isEmpty
+        updatePlaceholderLayout()
+    }
+
+    func updatePlaceholderLayout() {
+        let x = textContainerInset.width + (textContainer?.lineFragmentPadding ?? 0)
+        let y = textContainerInset.height
+        let width = frame.width - x - textContainerInset.width - (textContainer?.lineFragmentPadding ?? 0)
+        let size = placeholderTextField.sizeThatFits(NSSize(width: width, height: .infinity))
+        placeholderTextField.frame = NSRect(x: x, y: y, width: width, height: size.height)
+    }
+}
 #endif

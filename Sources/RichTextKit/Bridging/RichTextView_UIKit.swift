@@ -76,6 +76,8 @@ open class RichTextView: UITextView, RichTextViewComponent {
             allowsEditingTextAttributes = configuration.allowsEditingTextAttributes
             autocapitalizationType = configuration.autocapitalizationType
             spellCheckingType = configuration.spellCheckingType
+            placeholderLabel.text = configuration.placeholder
+            updatePlaceholder()
         }
     }
 
@@ -99,6 +101,14 @@ open class RichTextView: UITextView, RichTextViewComponent {
     /// The image configuration to use by the rich text view.
     var imageConfigurationWasSet = false
 
+    /// The placeholder label to use by the rich text view.
+    private lazy var placeholderLabel: UILabel = {
+        let label = UILabel()
+        label.isUserInteractionEnabled = false
+        label.textColor = .placeholderText
+        return label
+    }()
+
     #if iOS || os(visionOS)
 
     /// The image drop interaction to use.
@@ -121,6 +131,15 @@ open class RichTextView: UITextView, RichTextViewComponent {
 
     // MARK: - Overrides
 
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        updatePlaceholderLayout()
+    }
+
+    open override var attributedText: NSAttributedString! {
+        didSet { updatePlaceholder() }
+    }
+
     /// Layout subviews and auto-resize images in the rich text.
     ///
     /// I tried to only autosize image attachments here, but this didn't work - they
@@ -131,7 +150,7 @@ open class RichTextView: UITextView, RichTextViewComponent {
             if frame.size == .zero { return }
             if !isInitialFrameSetupNeeded { return }
             isInitialFrameSetupNeeded = false
-            setup(with: attributedString, format: richTextDataFormat)
+            setup(with: attributedText, format: richTextDataFormat)
         }
     }
 
@@ -382,6 +401,40 @@ public extension RichTextView {
     /// Get the mutable rich text managed by the view.
     var mutableAttributedString: NSMutableAttributedString? {
         textStorage
+    }
+}
+
+private extension RichTextView {
+
+    func updatePlaceholder() {
+        if placeholderLabel.superview == nil {
+            addSubview(placeholderLabel)
+        }
+        placeholderLabel.text = configuration.placeholder
+        placeholderLabel.font = font
+        placeholderLabel.isHidden = !attributedText.string.isEmpty
+        updatePlaceholderLayout()
+
+        NotificationCenter.default.removeObserver(self, name: UITextView.textDidChangeNotification, object: self)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleTextDidChange),
+            name: UITextView.textDidChangeNotification,
+            object: self
+        )
+    }
+
+    func updatePlaceholderLayout() {
+        let x = textContainerInset.left + textContainer.lineFragmentPadding
+        let y = textContainerInset.top
+        let width = frame.width - x - textContainerInset.right - textContainer.lineFragmentPadding
+        let size = placeholderLabel.sizeThatFits(CGSize(width: width, height: .infinity))
+        placeholderLabel.frame = CGRect(x: x, y: y, width: width, height: size.height)
+    }
+
+    @objc
+    func handleTextDidChange(_ notification: Notification) {
+        updatePlaceholder()
     }
 }
 #endif

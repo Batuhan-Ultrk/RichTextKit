@@ -23,11 +23,13 @@ public extension RichTextView {
         public init(
             isScrollingEnabled: Bool = true,
             isScrollBarsVisible: Bool? = nil,
-            isContinuousSpellCheckingEnabled: Bool = true
+            isContinuousSpellCheckingEnabled: Bool = true,
+            placeholder: String? = nil
         ) {
             self.isScrollingEnabled = isScrollingEnabled
             self.isScrollBarsVisible = isScrollBarsVisible ?? isScrollingEnabled
             self.isContinuousSpellCheckingEnabled = isContinuousSpellCheckingEnabled
+            self.placeholder = placeholder
         }
 
         /// Whether the editor should scroll.
@@ -38,6 +40,9 @@ public extension RichTextView {
 
         /// Whether the editor spell-checks in realtime.
         public var isContinuousSpellCheckingEnabled: Bool
+
+        /// The placeholder text to display when the editor is empty.
+        public var placeholder: String?
     }
 }
 #endif

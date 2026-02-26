@@ -105,7 +105,7 @@ public struct RichTextEditor: ViewRepresentable {
     }
 
     #if iOS || os(tvOS) || os(visionOS)
-    public func makeUIView(context: Context) -> some UIView {
+    public func makeUIView(context: Context) -> RichTextView {
         textView.setup(with: text.wrappedValue, format: format)
         textView.configuration = config
         textView.theme = style
@@ -113,11 +113,14 @@ public struct RichTextEditor: ViewRepresentable {
         return textView
     }
 
-    public func updateUIView(_ view: UIViewType, context: Context) {}
+    public func updateUIView(_ view: RichTextView, context: Context) {
+        view.configuration = config
+        view.theme = style
+    }
 
     #else
 
-    public func makeNSView(context: Context) -> some NSView {
+    public func makeNSView(context: Context) -> NSScrollView {
         textView.setup(with: text.wrappedValue, format: format)
         textView.configuration = config
         textView.theme = style
@@ -125,7 +128,10 @@ public struct RichTextEditor: ViewRepresentable {
         return scrollView
     }
 
-    public func updateNSView(_ view: NSViewType, context: Context) {}
+    public func updateNSView(_ view: NSScrollView, context: Context) {
+        textView.configuration = config
+        textView.theme = style
+    }
     #endif
 }
 
