@@ -83,6 +83,17 @@ public struct RichTextEditor: ViewRepresentable {
     @Environment(\.richTextEditorStyle)
     private var style
 
+    @Environment(\.richTextEditorPlaceholder)
+    private var placeholder
+
+    private var mergedConfig: RichTextEditorConfig {
+        var config = config
+        if let placeholder {
+            config.placeholder = placeholder
+        }
+        return config
+    }
+
     #if iOS || os(tvOS) || os(visionOS)
     public let textView = RichTextView()
     #endif
@@ -107,14 +118,14 @@ public struct RichTextEditor: ViewRepresentable {
     #if iOS || os(tvOS) || os(visionOS)
     public func makeUIView(context: Context) -> RichTextView {
         textView.setup(with: text.wrappedValue, format: format)
-        textView.configuration = config
+        textView.configuration = mergedConfig
         textView.theme = style
         viewConfiguration(textView)
         return textView
     }
 
     public func updateUIView(_ view: RichTextView, context: Context) {
-        view.configuration = config
+        view.configuration = mergedConfig
         view.theme = style
     }
 
@@ -122,14 +133,14 @@ public struct RichTextEditor: ViewRepresentable {
 
     public func makeNSView(context: Context) -> NSScrollView {
         textView.setup(with: text.wrappedValue, format: format)
-        textView.configuration = config
+        textView.configuration = mergedConfig
         textView.theme = style
         viewConfiguration(textView)
         return scrollView
     }
 
     public func updateNSView(_ view: NSScrollView, context: Context) {
-        textView.configuration = config
+        textView.configuration = mergedConfig
         textView.theme = style
     }
     #endif

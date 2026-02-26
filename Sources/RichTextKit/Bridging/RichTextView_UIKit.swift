@@ -409,19 +409,17 @@ private extension RichTextView {
     func updatePlaceholder() {
         if placeholderLabel.superview == nil {
             addSubview(placeholderLabel)
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(handleTextDidChange),
+                name: UITextView.textDidChangeNotification,
+                object: self
+            )
         }
         placeholderLabel.text = configuration.placeholder
         placeholderLabel.font = font
-        placeholderLabel.isHidden = !attributedText.string.isEmpty
+        placeholderLabel.isHidden = !attributedString.string.isEmpty
         updatePlaceholderLayout()
-
-        NotificationCenter.default.removeObserver(self, name: UITextView.textDidChangeNotification, object: self)
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleTextDidChange),
-            name: UITextView.textDidChangeNotification,
-            object: self
-        )
     }
 
     func updatePlaceholderLayout() {

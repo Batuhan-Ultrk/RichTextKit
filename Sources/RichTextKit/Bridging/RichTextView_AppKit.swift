@@ -266,7 +266,7 @@ private extension RichTextView {
         let x = textContainerInset.width + (textContainer?.lineFragmentPadding ?? 0)
         let y = textContainerInset.height
         let width = frame.width - x - textContainerInset.width - (textContainer?.lineFragmentPadding ?? 0)
-        let size = placeholderTextField.sizeThatFits(NSSize(width: width, height: .infinity))
+        let size = placeholderTextField.cell?.cellSize(forBounds: NSRect(x: 0, y: 0, width: width, height: .greatestFiniteMagnitude)) ?? .zero
         placeholderTextField.frame = NSRect(x: x, y: y, width: width, height: size.height)
     }
 }

@@ -20,6 +20,13 @@ public extension View {
     ) -> some View {
         self.environment(\.richTextEditorConfig, config)
     }
+
+    /// Apply a ``RichTextEditor`` placeholder.
+    func richTextEditorPlaceholder(
+        _ placeholder: String?
+    ) -> some View {
+        self.environment(\.richTextEditorPlaceholder, placeholder)
+    }
 }
 
 private extension RichTextEditorConfig {
@@ -32,12 +39,22 @@ private extension RichTextEditorConfig {
     }
 }
 
+struct RichTextEditorPlaceholderKey: EnvironmentKey {
+    static var defaultValue: String? { nil }
+}
+
 public extension EnvironmentValues {
 
     /// This value can bind to a rich text editor config.
     var richTextEditorConfig: RichTextEditorConfig {
         get { self [RichTextEditorConfig.Key.self] }
         set { self [RichTextEditorConfig.Key.self] = newValue }
+    }
+
+    /// This value can bind to a rich text editor placeholder.
+    var richTextEditorPlaceholder: String? {
+        get { self [RichTextEditorPlaceholderKey.self] }
+        set { self [RichTextEditorPlaceholderKey.self] = newValue }
     }
 }
 #endif
