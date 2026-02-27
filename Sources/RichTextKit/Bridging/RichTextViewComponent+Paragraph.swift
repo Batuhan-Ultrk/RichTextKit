@@ -30,13 +30,11 @@ public extension RichTextViewComponent {
         richTextParagraphStyle?[keyPath: keyPath]
     }
 
-    /// Set the current paragraph style.
-    ///
-    /// > Todo: The function currently can't handle multiple selected paragraphs.
-    /// If many paragraphs are selected, it will only affect the first one.
     func setRichTextParagraphStyle(_ style: NSParagraphStyle) {
         let range = lineRange(for: selectedRange)
-        guard range.length > 0 else { return }
+        guard range.length > 0 else {
+            return setRichTextAttribute(.paragraphStyle, to: style)
+        }
         #if os(watchOS)
         setRichTextAttribute(.paragraphStyle, to: style, at: range)
         #else

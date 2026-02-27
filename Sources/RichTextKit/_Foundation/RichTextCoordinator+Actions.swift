@@ -15,34 +15,67 @@ extension RichTextCoordinator {
         guard let action else { return }
         switch action {
         case .copy: textView.copySelection()
-        case .deleteSelectedText: textView.deleteText(in: textView.selectedRange)
-        case .deleteText(let range): textView.deleteText(in: range)
+        case .deleteSelectedText:
+            textView.deleteText(in: textView.selectedRange)
+            syncWithTextView()
+        case .deleteText(let range):
+            textView.deleteText(in: range)
+            syncWithTextView()
         case .dismissKeyboard: textView.resignFirstResponder()
-        case .pasteImage(let image): pasteImage(image)
-        case .pasteImages(let images): pasteImages(images)
-        case .pasteText(let text): pasteText(text)
+        case .pasteImage(let image):
+            pasteImage(image)
+            syncWithTextView()
+        case .pasteImages(let images):
+            pasteImages(images)
+            syncWithTextView()
+        case .pasteText(let text):
+            pasteText(text)
+            syncWithTextView()
         case .print: break
         case .redoLatestChange:
             textView.redoLatestChange()
             syncContextWithTextView()
-        case .replaceSelectedText(let text): textView.replaceText(in: textView.selectedRange, with: text)
-        case .replaceText(let range, let text): textView.replaceText(in: range, with: text)
+        case .replaceSelectedText(let text):
+            textView.replaceText(in: textView.selectedRange, with: text)
+            syncWithTextView()
+        case .replaceText(let range, let text):
+            textView.replaceText(in: range, with: text)
+            syncWithTextView()
         case .selectRange(let range): setSelectedRange(to: range)
-        case .setAlignment(let alignment): textView.setRichTextParagraphStyleValue(\.alignment, alignment)
-        case .setAttributedString(let string): setAttributedString(to: string)
-        case .setColor(let color, let newValue): setColor(color, to: newValue)
+        case .setAlignment(let alignment):
+            textView.setRichTextParagraphStyleValue(\.alignment, alignment)
+            syncContextWithTextView()
+        case .setAttributedString(let string):
+            setAttributedString(to: string)
+            syncContextWithTextView()
+        case .setColor(let color, let newValue):
+            setColor(color, to: newValue)
+            syncContextWithTextView()
         case .setHighlightedRange(let range): setHighlightedRange(to: range)
         case .setHighlightingStyle(let style): textView.highlightingStyle = style
-        case .setParagraphStyle(let style): textView.setRichTextParagraphStyle(style)
-        case .setStyle(let style, let newValue): setStyle(style, to: newValue)
+        case .setParagraphStyle(let style):
+            textView.setRichTextParagraphStyle(style)
+            syncContextWithTextView()
+        case .setStyle(let style, let newValue):
+            setStyle(style, to: newValue)
+            syncContextWithTextView()
         case .stepFontSize(let points):
             textView.stepRichTextFontSize(points: points)
             syncContextWithTextView()
-        case .stepIndent(let points): textView.stepRichTextParagraphStyleValue(\.firstLineHeadIndent, points)
+        case .stepIndent(let points):
+            textView.stepRichTextParagraphStyleValue(\.firstLineHeadIndent, points)
             textView.stepRichTextParagraphStyleValue(\.headIndent, points)
-        case .stepLineSpacing(let points): textView.stepRichTextParagraphStyleValue(\.lineSpacing, points)
-        case .stepSuperscript(let points): textView.stepRichTextSuperscriptLevel(points: points)
-        case .toggleStyle(let style): textView.toggleRichTextStyle(style)
+            textView.stepRichTextParagraphStyleValue(\.tailIndent, -points)
+            syncContextWithTextView()
+        case .stepLineSpacing(let points):
+            textView.stepRichTextParagraphStyleValue(\.lineSpacing, points)
+            syncContextWithTextView()
+        case .stepSuperscript(let points):
+            textView.stepRichTextSuperscriptLevel(points: points)
+            syncContextWithTextView()
+        case .toggleStyle(let style):
+            textView.toggleRichTextStyle(style)
+            syncContextWithTextView()
         case .undoLatestChange:
             textView.undoLatestChange()
             syncContextWithTextView()
