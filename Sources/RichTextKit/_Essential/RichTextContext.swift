@@ -94,7 +94,6 @@ public class RichTextContext: ObservableObject {
             self.paragraphStyle[keyPath: keyPath]
         } set: { value in
             self.paragraphStyle[keyPath: keyPath] = value
-            self.paragraphStyle = self.paragraphStyle
         }
     }
 

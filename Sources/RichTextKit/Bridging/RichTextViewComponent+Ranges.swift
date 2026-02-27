@@ -18,12 +18,14 @@ extension RichTextViewComponent {
         #if os(watchOS)
         return notFoundRange
         #else
-        guard let storage = textStorageWrapper else {
-            return NSRange(location: NSNotFound, length: 0)
-        }
+        guard
+            let manager = layoutManagerWrapper,
+            let storage = textStorageWrapper
+        else { return NSRange(location: NSNotFound, length: 0) }
         let string = storage.string as NSString
         let locationRange = NSRange(location: location, length: 0)
-        return string.lineRange(for: locationRange)
+        let lineRange = string.lineRange(for: locationRange)
+        return manager.characterRange(forGlyphRange: lineRange, actualGlyphRange: nil)
         #endif
     }
 
@@ -32,10 +34,25 @@ extension RichTextViewComponent {
         #if os(watchOS)
         return notFoundRange
         #else
-        guard let storage = textStorageWrapper else {
+        // Use the location-based logic if range is empty
+        if range.length == 0 {
+            return lineRange(at: range.location)
+        }
+
+        guard let manager = layoutManagerWrapper else {
             return NSRange(location: NSNotFound, length: 0)
         }
-        return (storage.string as NSString).lineRange(for: range)
+
+        var lineRange = NSRange(location: NSNotFound, length: 0)
+        manager.enumerateLineFragments(
+            forGlyphRange: range
+        ) { (_, _, _, glyphRange, stop) in
+            lineRange = glyphRange
+            stop.pointee = true
+        }
+
+        // Convert glyph range to character range
+        return manager.characterRange(forGlyphRange: lineRange, actualGlyphRange: nil)
         #endif
     }
 }
